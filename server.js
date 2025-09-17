@@ -10,7 +10,7 @@ const port = 3000;
 // Connect to MongoDB
 connectMongoDB();
 
-// Middleware
+//Middleware to parse JSON and urlencoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
