@@ -1,11 +1,11 @@
 const express = require('express');
 const Customer = require('../models/Customer');
 const Lead = require('../models/Lead');
-const { authenticateStatus, requireAdmin } = require('../middleware/auth');
+const { authenticateStaticToken } = require('../middleware/auth');
 const router = express.Router();
 
 // Apply authentication middleware to all routes in this router
-router.use(authenticateStatus);
+//router.use(authenticateStaticToken);
 
 // MongoDB Health check
 router.get('/api/mongo/health', async (req, res) => {
@@ -26,7 +26,7 @@ router.get('/api/mongo/health', async (req, res) => {
 });
 
 // Get all customers from MongoDB
-router.get('/api/mongo/customers', async (req, res) => {
+router.get('/api/mongo/customers', authenticateStaticToken, async (req, res) => {
   try {
     const customers = await Customer.find();
     res.json({ 
@@ -43,7 +43,7 @@ router.get('/api/mongo/customers', async (req, res) => {
 });
 
 // Create new customer in MongoDB
-router.post('/api/mongo/customers', async (req, res) => {
+router.post('/api/mongo/customers',authenticateStaticToken, async (req, res) => {
   try {
     const { name, email, phone } = req.body;
     const customer = new Customer({ name, email, phone });
@@ -72,7 +72,7 @@ router.post('/api/mongo/customers', async (req, res) => {
 });
 
 // Update customer in MongoDB (PUT - complete replacement)
-router.put('/api/mongo/customers/:id', async (req, res) => {
+router.put('/api/mongo/customers/:id', authenticateStaticToken, async (req, res) => {
   try {
     const { name, email, phone } = req.body;
     const customer = await Customer.findByIdAndUpdate(
@@ -103,7 +103,7 @@ router.put('/api/mongo/customers/:id', async (req, res) => {
 });
 
 // Partially update customer in MongoDB (PATCH)
-router.patch('/api/mongo/customers/:id', async (req, res) => {
+router.patch('/api/mongo/customers/:id', authenticateStaticToken, async (req, res) => {
   try {
     const updates = req.body;
     const allowedFields = ['name', 'email', 'phone'];
@@ -152,7 +152,7 @@ router.patch('/api/mongo/customers/:id', async (req, res) => {
 });
 
 // Delete customer from MongoDB - Admin only
-router.delete('/api/mongo/customers/:id', requireAdmin, async (req, res) => {
+router.delete('/api/mongo/customers/:id',  authenticateStaticToken, async (req, res) => {
   try {
     const customer = await Customer.findByIdAndDelete(req.params.id);
     
@@ -178,7 +178,7 @@ router.delete('/api/mongo/customers/:id', requireAdmin, async (req, res) => {
 });
 
 // Get customers created between two dates
-router.get('/api/mongo/customers/date-range', async (req, res) => {
+router.get('/api/mongo/customers/date-range', authenticateStaticToken, async (req, res) => {
   try {
     const { from, to } = req.query;
     
@@ -244,7 +244,7 @@ router.get('/api/mongo/customers/date-range', async (req, res) => {
 });
 
 // Create new lead in MongoDB
-router.post('/api/mongo/lead', async (req, res) => {
+router.post('/api/mongo/lead', authenticateStaticToken, async (req, res) => {
   try {
     const { name, email, phone,leadsource, leadcomments } = req.body;
     console.log(`Received lead data: ${JSON.stringify(req.body)}`);
