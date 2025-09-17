@@ -12,9 +12,3 @@ CREATE TABLE IF NOT EXISTS customers (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Insert sample data
-INSERT INTO customers (name, email, phone) VALUES
-('John Doe', 'john.doe@example.com', '+1234567890'),
-('Jane Smith', 'jane.smith@example.com', '+0987654321'),
-('Bob Johnson', 'bob.johnson@example.com', '+1122334455')
-ON DUPLICATE KEY UPDATE name=VALUES(name);

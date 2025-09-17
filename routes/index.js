@@ -1,5 +1,5 @@
 const express = require('express');
-const db = require('../config/database');
+const db = require('../config/mysql');
 const router = express.Router();
 
 // Home route

@@ -1,5 +1,6 @@
 const express = require('express');
 const Customer = require('../models/Customer');
+const Lead = require('../models/Lead');
 const router = express.Router();
 
 // MongoDB Health check
@@ -235,6 +236,36 @@ router.get('/api/mongo/customers/date-range', async (req, res) => {
       message: 'Failed to fetch customers by date range',
       error: error.message
     });
+  }
+});
+
+// Create new lead in MongoDB
+router.post('/api/mongo/lead', async (req, res) => {
+  try {
+    const { name, email, phone,leadsource, leadcomments } = req.body;
+    console.log(`Received lead data: ${JSON.stringify(req.body)}`);
+    const lead = new Lead({  name, email, phone,leadsource, leadcomments, leadprocessed: 'New' });
+    const savedLead = await lead.save();
+    
+    res.status(201).json({ 
+      status: 'success',
+      message: 'Lead created successfully in MongoDB',
+      data: savedLead 
+    });
+  } catch (error) {
+    if (error.code === 11000) {
+      res.status(400).json({ 
+        status: 'error', 
+        message: 'Email already exists',
+        error: 'Duplicate email address' 
+      });
+    } else {
+      res.status(500).json({ 
+        status: 'error', 
+        message: 'Failed to create lead in MongoDB',
+        error: error.message 
+      });
+    }
   }
 });
 

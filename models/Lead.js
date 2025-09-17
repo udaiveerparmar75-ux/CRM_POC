@@ -1,6 +1,7 @@
+
 const mongoose = require('mongoose');
 
-const customerSchema = new mongoose.Schema({
+const leadSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -16,12 +17,23 @@ const customerSchema = new mongoose.Schema({
   phone: {
     type: String,
     trim: true
-  }
+  },
+  leadsource: {
+    type: String,
+    trim: true
+  },
+   leadcomments: {
+    type: String,
+    trim: true
+  },
+   leadprocessed: {
+    type: String,
+    trim: true
+  },
+
 }, {
   timestamps: true // This adds createdAt and updatedAt fields
 });
+const Lead = mongoose.model('Lead', leadSchema);
 
-const Customer = mongoose.model('Customer', customerSchema);
-
-module.exports = Customer;
-
+module.exports = Lead;
