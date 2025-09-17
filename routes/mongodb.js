@@ -1,7 +1,11 @@
 const express = require('express');
 const Customer = require('../models/Customer');
 const Lead = require('../models/Lead');
+const { authenticateStatus, requireAdmin } = require('../middleware/auth');
 const router = express.Router();
+
+// Apply authentication middleware to all routes in this router
+router.use(authenticateStatus);
 
 // MongoDB Health check
 router.get('/api/mongo/health', async (req, res) => {
@@ -147,8 +151,8 @@ router.patch('/api/mongo/customers/:id', async (req, res) => {
   }
 });
 
-// Delete customer from MongoDB
-router.delete('/api/mongo/customers/:id', async (req, res) => {
+// Delete customer from MongoDB - Admin only
+router.delete('/api/mongo/customers/:id', requireAdmin, async (req, res) => {
   try {
     const customer = await Customer.findByIdAndDelete(req.params.id);
     
@@ -244,7 +248,8 @@ router.post('/api/mongo/lead', async (req, res) => {
   try {
     const { name, email, phone,leadsource, leadcomments } = req.body;
     console.log(`Received lead data: ${JSON.stringify(req.body)}`);
-    const lead = new Lead({  name, email, phone,leadsource, leadcomments, leadprocessed: 'New' });
+    console.log(`Lead created by user: ${req.user.id} (${req.user.status})`);
+    const lead = new Lead({  name, email, phone,leadsource, leadcomments, leadprocessed: 'New', createdBy: req.user.id });
     const savedLead = await lead.save();
     
     res.status(201).json({ 

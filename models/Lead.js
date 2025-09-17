@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 
 const leadSchema = new mongoose.Schema({
@@ -22,12 +21,17 @@ const leadSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
-   leadcomments: {
+  leadcomments: {
     type: String,
     trim: true
   },
-   leadprocessed: {
+  leadprocessed: {
     type: String,
+    trim: true
+  },
+  createdBy: {
+    type: String,
+    required: true,
     trim: true
   },
 
