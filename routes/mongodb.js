@@ -246,10 +246,9 @@ router.get('/api/mongo/customers/date-range', authenticateStaticToken, async (re
 // Create new lead in MongoDB
 router.post('/api/mongo/lead', authenticateStaticToken, async (req, res) => {
   try {
-    const { name, email, phone,leadsource, leadcomments } = req.body;
+    const { name, email, phone,leadsource, leadcomments, leadprocessed } = req.body;
     console.log(`Received lead data: ${JSON.stringify(req.body)}`);
-    console.log(`Lead created by user: ${req.user.id} (${req.user.status})`);
-    const lead = new Lead({  name, email, phone,leadsource, leadcomments, leadprocessed: 'New', createdBy: req.user.id });
+    const lead = new Lead({  name, email, phone,leadsource, leadcomments, leadprocessed: 'New', createdBy:   'new'});
     const savedLead = await lead.save();
     
     res.status(201).json({ 
